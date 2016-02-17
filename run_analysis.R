@@ -1,4 +1,5 @@
 library(data.table)
+library(tidyr)
 library(dplyr)
 
 setwd("/Volumes/DocHouse/projects/coursera/data cleaning/coursera-w4")
@@ -40,11 +41,13 @@ readRecord <- function(opt){
     
     ## Uses descriptive activity names to name the activities in the data set
     ## apply labels with activity_labels to y_test. activity_labels$V1 == y_test$V1
-    y_test <- merge(y_test, activity_labels, by="V1")
-    colnames(y_test) <- c("ActivityCode", "ActivityName")
+    ##y_test <- merge(y_test, activity_labels, by="V1")
+    ##colnames(y_test) <- c("ActivityCode", "ActivityName")
+    ##y_test <- y_test %>% select(ActivityName)
     
     ## Merges the training and the test sets to create one data set
-    sample_data <- bind_cols(subject, y_test, x_test)
+    ## sample_data <- bind_cols(subject, y_test, x_test)
+    sample_data <- bind_cols(subject, x_test)
     
     ## Appropriately labels the data set with descriptive variable names
     ## apply labels with features to x_test by column
@@ -59,7 +62,7 @@ readRecord <- function(opt){
     ##colnames(sample_data) <- c("Subject", features[features$V1== 1:ncol(sample_data)]$V2)
     ##sample_data <- sample_data %>% select(cols_index)
     
-    colnames(sample_data)[1] <- "Subject"
+    colnames(sample_data)[1] <- "subject"
     return(sample_data)
 }
 
@@ -70,7 +73,15 @@ mergeData <- function(){
   bind_rows(test, train)
 }
 
-tidyData <- function(given){
+tidyData <- function(){
   ##TODO. Remove duplicate Subject, ActivityCode, ActivityName 
-  given
+  m <- mergeData()
+  m %>% gather(activity, value, 2:ncol(m))
+}
+
+aggregateData <- function() {
+  d <- tidyData()
+  d <- aggregate(d[,3], list(d$activity, d$subject), data=d, mean)
+  names(d) <- c("activity", "subject", "value")
+  return (d)
 }
