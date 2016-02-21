@@ -2,86 +2,108 @@ library(data.table)
 library(tidyr)
 library(dplyr)
 
-setwd("/Volumes/DocHouse/projects/coursera/data cleaning/coursera-w4")
-
-PATH_DATASET = "./dataset"
-TEST = "test"
-TRAIN = "train"
-
-readAFile <- function(input, sep="auto", select=NULL){
-  fread(input, sep=sep, select=select, stringsAsFactors=FALSE)
+log.debug <- function(...) {
+    cat("[LOG.run_analysis]", ..., "\n")
 }
 
-getFilePath <- function(prefix, opt) {
-  s <- paste0(prefix, opt, ".txt")
-  file.path(PATH_DATASET, opt, s)
+#1.Merge the training and the test sets
+getPath <- function(train.type, data.type){
+  file.path("dataset", train.type, paste0(data.type, "_", train.type, ".txt"))
 }
 
-activity_labels <- fread("./dataset/features.txt", sep=" ")
-features <- fread("./dataset/features.txt", sep=" ")
-
-cols_x_test <- features[features$V1 == 1:561]$V2##colnames(x_test)
-
-readRecord <- function(opt){
-    subject_file <- getFilePath("subject_", opt)
-    x_test_file <- getFilePath("x_", opt)
-    y_test_file <- getFilePath("y_", opt)
-    
-    subject <- readAFile(subject_file)
-    x_test <- readAFile(x_test_file, sep=" ", select = 1:561)
-    y_test <- readAFile(y_test_file)
-    
-    ##cols_x_test <- features[features$V1== 1:ncol(x_test)]$V2##colnames(x_test)
-    colnames(x_test) <- cols_x_test
-    
-    ## Extracts only the measurements on the mean and standard deviation for each measurement
-    ##x_test <- filter(features, V2 %like% "mean()" | V2 %like% "std()")
-    cols_index <- grep("-mean()|-std()", cols_x_test)
-    x_test <- x_test %>% select(cols_index)
-    
-    ## Uses descriptive activity names to name the activities in the data set
-    ## apply labels with activity_labels to y_test. activity_labels$V1 == y_test$V1
-    ##y_test <- merge(y_test, activity_labels, by="V1")
-    ##colnames(y_test) <- c("ActivityCode", "ActivityName")
-    ##y_test <- y_test %>% select(ActivityName)
-    
-    ## Merges the training and the test sets to create one data set
-    ## sample_data <- bind_cols(subject, y_test, x_test)
-    sample_data <- bind_cols(subject, x_test)
-    
-    ## Appropriately labels the data set with descriptive variable names
-    ## apply labels with features to x_test by column
-    ##colnames(sample_data) <- c("Subject", features[features$V1== 1:ncol(sample_data)]$V2)
-    ##colnames(sample_data) <- c("Subject", features[features$V1== cols_index]$V2, colnames(y_test))
-    
-    ## Creates a second, independent tidy data set with the average of each variable for each activity and each subject
-    
-    ## Extracts only the measurements on the mean and standard deviation for each measurement
-    ##x_test <- filter(features, V2 %like% "mean()" | V2 %like% "std()")
-    ##cols_index <- grep("-mean()|-std()", cols_x_test)
-    ##colnames(sample_data) <- c("Subject", features[features$V1== 1:ncol(sample_data)]$V2)
-    ##sample_data <- sample_data %>% select(cols_index)
-    
-    colnames(sample_data)[1] <- "subject"
-    return(sample_data)
+mergeFile <- function(data.type){
+  x <- read.table(getPath("train", data.type))
+  y  <- read.table(getPath("test", data.type))
+  rbind(x, y)
 }
 
-mergeData <- function(){
-  test <- readRecord(TEST)
-  train <- readRecord(TRAIN)
+mergeXdata <- function(){
+  #x_train <- read.table("dataset/train/X_train.txt")
+  #x_test  <- read.table("dataset/test/X_test.txt")
+  #rbind(x_train, x_test)
+  mergeFile("X")
+}
+
+mergeYdata <- function(){
+  #y_train <- read.table("dataset/train/y_train.txt")
+  #y_test  <- read.table("dataset/test/y_test.txt")
+  #rbind(y_train, y_test)
+  mergeFile("Y")
+}
+
+mergeSubject <- function(){
+  #subject_train <- read.table("dataset/train/subject_train.txt")
+  #subject_test  <- read.table("dataset/test/subject_test.txt")
+  #rbind(subject_train, subject_test) 
+  mergeFile("subject")
+}
+
+getMeanAndStandardMeasurement <- function(columns, as.label=FALSE){
+    append(columns, grep(s, cols_x_test, value=as.label))
+}
+
+#2.Extracts only the measurements on the mean and standard deviation for each measurement.
+extratMeanAndStandardMeasurement <- function(x, selection) {
+   x <- x[, selection]
+   return(x)
+}
+
+#3. Uses descriptive activity names to name the activities in the data set
+useDescriptiveActivityNames <- function(y) {
+  activity_labels <- read.table("dataset/activity_labels.txt")
   
-  bind_rows(test, train)
+  #remove underscore
+  activity_labels[,2] <- gsub("_", "", activity_labels[,2])
+  y[,1] <- activity_labels[y[,1],2]
+  
+  #set column name
+  names(y) <- "activity"
+  return(y)
 }
 
-tidyData <- function(){
-  ##TODO. Remove duplicate Subject, ActivityCode, ActivityName 
-  m <- mergeData()
-  m %>% gather(activity, value, 2:ncol(m))
+#4.Appropriately labels the data set with descriptive variable names.
+labelDescriptiveVariableNames <- function(x, xcols){
+  names(x) <- xcols#features[selection, 2]
+  
+  #remove brackets
+  names(x) <- gsub("\\(|\\)", "", names(x))
+  return(x)
 }
 
-aggregateData <- function() {
-  d <- tidyData()
-  d <- aggregate(d[,3], list(d$activity, d$subject), data=d, mean)
-  names(d) <- c("activity", "subject", "value")
-  return (d)
+labelDescriptiveSubjectNames <- function(s){
+    names(s) <- "subject"
+    return(s)
 }
+
+combineData <- function(subject, ydata, xdata){
+  cbind(subject, ydata, xdata)
+}
+
+
+#5.From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
+createTidyDataset <- function(x){
+  cols <- 3:ncol(x)
+  x %>% 
+    gather(measurement, value, cols) %>%
+    dcast(subject + activity ~ measurement, mean)
+  
+}
+
+#Call this function to run the project
+app.run <- function(){
+    features <- read.table("dataset/features.txt")
+    selection <- grep("-mean\\(\\)|-std\\(\\)", features[, 2])
+  
+    sData <- mergeFile("subject") %>% labelDescriptiveSubjectNames()
+    xData <- mergeFile("X") %>% extratMeanAndStandardMeasurement(selection) %>% labelDescriptiveVariableNames(features[selection, 2])
+    yData <- mergeFile("Y") %>% useDescriptiveActivityNames()
+    tidyData <- combineData(sData, yData, xData) %>% createTidyDataset()
+    
+    #You will get tidy_dataset.txt
+    file.name = "tidy_dataset.txt"
+    write.table(tidyData, file.name, quote = FALSE)
+    log.debug(file.name, "has been created in the working directory.")
+}
+
+#Run this script
+app.run()
