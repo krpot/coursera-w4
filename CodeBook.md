@@ -69,7 +69,7 @@ std: Standard deviation
 
 X: X cooridnate
 Y: Y coordinate
-Z: Z coorinate
+Z: Z coordinate
 
 
 All mesaurement value columns are like below:
