@@ -52,12 +52,31 @@ WALKINGUPSTAIRS
 
 
 other variables(fBodyAcc.mean.X to tGravityAccMag.std)
-Thesea are all numeric fields. It Represents feature names. These variables will have name pattern like fBodyAcc.mean.X. fBodyAcc indicates it comes from accelerometer and tGyro from gyroscope 3-axial raw signals. ('f' means frequency and 't' means time.) The second part, mean and std, stand for 'mean value' and 'standard deviation'.
-Last part(X,Y,Z) is directions. All mesaurement value columns are like below:
+Thesea are all numeric fields. It Represents feature names. The variable names has pattern like fBodyAccJerk-mean-X. Each part means:
+
+f: freqency domain.
+t: time domain.
+
+BodyAcc: body acceleration captured by accelerometer. 
+BodyAccJerk: body acceleration jerk captured by accelerometer.
+BodyAccGyro: body acceleration captured by gyroscope.
+BodyAccGyroJerk: body acceleration jerk captured by gyroscope.
+
+Mag: Magnitute
+
+mean: Average value
+std: Standard deviation
+
+X: X cooridnate
+Y: Y coordinate
+Z: Z coorinate
+
+
+All mesaurement value columns are like below:
 
 Frequency base variables:
-fBodyAcc-mean-X 
-fBodyAcc-mean-Y 
+fBodyAcc-mean-X
+fBodyAcc-mean-Y
 fBodyAcc-mean-Z 
 fBodyAcc-std-X 
 fBodyAcc-std-Y 
