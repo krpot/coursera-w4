@@ -85,4 +85,4 @@ app.run <- function(){
 }
 
 #Run this script
-app.run()
+#app.run()
