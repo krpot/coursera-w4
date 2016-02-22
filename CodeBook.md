@@ -28,7 +28,7 @@ It consist of 180 observations and 68 variables. It looks like the following:
 
 	subject          activity fBodyAcc.mean.X ~ tGravityAccMag.std
 1       1            LAYING     -0.93909905     -0.79514486
-...........................................................
+
 180      30 WALKINGUPSTAIRS      -0.4204028      -0.3274108
 
 
