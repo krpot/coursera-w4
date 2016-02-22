@@ -80,7 +80,7 @@ app.run <- function(){
     
     #You will get tidy_dataset.txt
     file.name = "tidy_dataset.txt"
-    write.table(tidyData, file.name, quote = FALSE)
+    write.table(tidyData, file.name, quote = FALSE, row.name=FALSE)
     log.debug(file.name, "has been created in the working directory.")
 }
 
