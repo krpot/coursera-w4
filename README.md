@@ -12,8 +12,7 @@ Unzip it into your_working_directory/dataset directory. The zip file incluses ac
 
 Make suere that you have run_analysis.R in the working directory. If not, put run_analysis.R into the working directory.
 
-To run run_analysis.R
-Run this command source(run_analysis.R, chdir=TRUE)
+To run run_analysis.R, run the command source(run_analysis.R, chdir=TRUE)
 
 Then, the script will create tidy_dataset.txt as a final outcome in the working directory.
 
