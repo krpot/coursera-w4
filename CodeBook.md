@@ -74,7 +74,7 @@ Z: Z coorinate
 
 All mesaurement value columns are like below:
 
-Frequency base variables:
+Frequency domain:
 fBodyAcc-mean-X
 fBodyAcc-mean-Y
 fBodyAcc-mean-Z 
@@ -102,7 +102,7 @@ fBodyGyro-std-X
 fBodyGyro-std-Y 
 fBodyGyro-std-Z 
 
-Time based variables:
+Time domain:
 tBodyAcc-mean-X 
 tBodyAcc-mean-Y 
 tBodyAcc-mean-Z 
