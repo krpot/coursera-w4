@@ -17,27 +17,6 @@ mergeFile <- function(data.type){
   rbind(x, y)
 }
 
-mergeXdata <- function(){
-  #x_train <- read.table("dataset/train/X_train.txt")
-  #x_test  <- read.table("dataset/test/X_test.txt")
-  #rbind(x_train, x_test)
-  mergeFile("X")
-}
-
-mergeYdata <- function(){
-  #y_train <- read.table("dataset/train/y_train.txt")
-  #y_test  <- read.table("dataset/test/y_test.txt")
-  #rbind(y_train, y_test)
-  mergeFile("Y")
-}
-
-mergeSubject <- function(){
-  #subject_train <- read.table("dataset/train/subject_train.txt")
-  #subject_test  <- read.table("dataset/test/subject_test.txt")
-  #rbind(subject_train, subject_test) 
-  mergeFile("subject")
-}
-
 getMeanAndStandardMeasurement <- function(columns, as.label=FALSE){
     append(columns, grep(s, cols_x_test, value=as.label))
 }

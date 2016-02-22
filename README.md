@@ -1,6 +1,5 @@
 ==================================================================
 Coursera Week 4 of Getting and Cleaning Data Assignment
-by Mark Sunghun Park
 ==================================================================
 
 
@@ -89,7 +88,7 @@ subject_train activity 	tBodyAcc-mean()-X ... angle(Z,gravityMean)
 According to the assignment instruction, you can handle those files like following:
 
 1. Merges the training and the test sets to create one data set.
-You can merge x_test.txt and y_test.txt by using col_bind().
+You can merge x_test.txt and y_test.txt by using cbind().
 
 2.Extracts only the measurements on the mean and standard deviation for each measurement.
 
