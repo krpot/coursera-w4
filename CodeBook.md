@@ -52,7 +52,7 @@ WALKINGUPSTAIRS
 
 
 other variables(fBodyAcc.mean.X to tGravityAccMag.std)
-Thesea are all numeric fields. It Represents feature names. The variable names has pattern like fBodyAccJerk-mean-X. Each part means:
+These are all numeric fields. The variable names has pattern like fBodyAccJerk-mean-X, which means:
 
 f: freqency domain.
 t: time domain.
